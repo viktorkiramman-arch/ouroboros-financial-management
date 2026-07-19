@@ -1,0 +1,7 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Financial Report</title><style>body{font-family:Arial,sans-serif;margin:32px;color:#0f172a}h1{color:#0ea5e9}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border:1px solid #cbd5e1;padding:8px;text-align:left}th{background:#f1f5f9}.right{text-align:right}</style></head>
+<body>
+<h1>Financial Report</h1>
+<p>Total Income: {{ total_income|money }}<br>Total Expenses: {{ total_expense|money }}<br>Net Cash Flow: {{ net|money }}</p>
+<table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th class="right">Amount</th></tr></thead><tbody>{% for t in rows %}<tr><td>{{ t.date }}</td><td>{{ t.description }}</td><td>{{ t.category }}</td><td>{{ 'Income' if t.is_income else 'Expense' }}</td><td class="right">{{ t.amount_cents|money }}</td></tr>{% endfor %}</tbody></table>
+</body></html>

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block auth_content %}
+<div class="auth-card animate-in">
+    <div class="brand-block centered">
+        <div class="brand-mark"><img src="{{ url_for('static', filename='img/ouroboros-logo.png') }}" alt=""></div>
+        <div>
+            <div class="brand-title">Ouroboros Financial Management</div>
+            <div class="brand-subtitle">Create your private profile</div>
+        </div>
+    </div>
+    <h1>Register</h1>
+    <p class="muted">Local mode keeps data on this computer. Hosted deployments require a private production database.</p>
+    <form method="post" class="stack-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Username<input name="username" autocomplete="username" minlength="3" maxlength="32" required></label>
+        <label>Password<input type="password" name="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+        <label>Confirm password<input type="password" name="confirm_password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+        <button class="primary-button full" type="submit">Create Account</button>
+    </form>
+    <p class="muted centered-text">Already registered? <a href="{{ url_for('auth.login') }}">Login</a></p>
+</div>
+{% endblock %}

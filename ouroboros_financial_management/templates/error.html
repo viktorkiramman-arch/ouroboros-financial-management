@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel narrow-panel error-panel"><h2>{{ code }}</h2><p>{{ message }}</p><a class="soft-button" href="{{ url_for('main.dashboard') if current_user else url_for('auth.login') }}">Go back</a></section>
+{% endblock %}
+{% block auth_content %}
+<section class="auth-card error-panel"><h1>{{ code }}</h1><p>{{ message }}</p><a class="soft-button" href="{{ url_for('auth.login') }}">Login</a></section>
+{% endblock %}

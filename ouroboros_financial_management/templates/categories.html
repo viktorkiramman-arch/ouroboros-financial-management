@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header"><div><h2>Add Category</h2><p>Transaction category fields use this list as a dropdown.</p></div></div>
+        <form method="post" class="inline-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input name="name" maxlength="40" required placeholder="New category">
+            <button class="primary-button" type="submit">Add Category</button>
+        </form>
+    </section>
+    <section class="panel hint-panel"><h2>Core categories</h2><p>Income and Uncategorized are protected because the app uses them for default behavior.</p></section>
+</div>
+<section class="panel">
+    <div class="panel-header"><div><h2>Categories</h2><p>{{ rows|length }} available category choices.</p></div></div>
+    <div class="category-grid">
+        {% for cat in rows %}
+        <div class="category-card">
+            <span>{{ cat.name }}</span>
+            {% if cat.name not in ['Income', 'Uncategorized'] %}
+            <form method="post" action="{{ url_for('main.delete_category', category_id=cat.id) }}" data-confirm="Delete this category?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="link-button danger" type="submit">Delete</button></form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

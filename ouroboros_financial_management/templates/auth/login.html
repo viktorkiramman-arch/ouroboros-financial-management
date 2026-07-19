@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block auth_content %}
+<div class="auth-card animate-in">
+    <div class="brand-block centered">
+        <div class="brand-mark"><img src="{{ url_for('static', filename='img/ouroboros-logo.png') }}" alt=""></div>
+        <div>
+            <div class="brand-title">Ouroboros Financial Management</div>
+            <div class="brand-subtitle">Private finance workspace</div>
+        </div>
+    </div>
+    <h1>Login</h1>
+    <p class="muted">Use your private account. No default demo account exists.</p>
+    <form method="post" class="stack-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Username<input name="username" autocomplete="username" maxlength="32" required></label>
+        <label>Password<input type="password" name="password" autocomplete="current-password" maxlength="128" required></label>
+        <button class="primary-button full" type="submit">Login</button>
+    </form>
+    <p class="muted centered-text">No account yet? <a href="{{ url_for('auth.register') }}">Register</a></p>
+</div>
+{% endblock %}

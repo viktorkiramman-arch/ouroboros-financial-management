@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header"><div><h2>CSV Import Preview</h2><p>Confirm column mapping before importing.</p></div></div>
+    <form method="post" action="{{ url_for('main.import_commit') }}" class="grid-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% set fields = [('col_date','Date','date'),('col_description','Description','description'),('col_amount','Signed Amount','amount'),('col_debit','Debit','debit'),('col_credit','Credit','credit'),('col_category','Category optional','category')] %}
+        {% for name,label,key in fields %}
+        <label>{{ label }}
+            <select name="{{ name }}" {% if key in ['date','description'] %}required{% endif %}>
+                <option value="">Not mapped</option>
+                {% for header in preview.headers %}
+                <option value="{{ header }}" {% if preview.detected.get(key) == header %}selected{% endif %}>{{ header }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        {% endfor %}
+        <div class="form-actions"><button class="primary-button" type="submit">Import Rows</button><a class="soft-button" href="{{ url_for('main.transactions') }}">Cancel</a></div>
+    </form>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><h2>First Rows</h2><p>Use this to confirm the mapping.</p></div></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr>{% for h in preview.headers %}<th>{{ h }}</th>{% endfor %}</tr></thead>
+            <tbody>{% for row in preview.rows %}<tr>{% for h in preview.headers %}<td>{{ row[h] }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

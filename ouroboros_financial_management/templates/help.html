@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel hero-panel"><div><h2>Interactive Tutorial</h2><p>Follow this order when setting up a personal, family, company, or group workspace.</p></div><a class="soft-button" href="{{ url_for('main.workspaces') }}">Start With Workspaces</a></section>
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header"><div><h2>First-Time Setup Checklist</h2><p>Complete these in order for the best analyst results.</p></div></div>
+        <div class="tutorial-list">
+            <div class="tutorial-step"><div><strong>Create or select a workspace.</strong><p>Use Personal, Family, Company, or Group depending on what you are managing.</p></div></div>
+            <div class="tutorial-step"><div><strong>Add members.</strong><p>For family mode, add breadwinners and dependents. For company/group mode, add employees, departments, or members.</p></div></div>
+            <div class="tutorial-step"><div><strong>Review categories.</strong><p>Categories feed dropdowns, budgets, reports, charts, and the analyst.</p></div></div>
+            <div class="tutorial-step"><div><strong>Add transactions or import CSV.</strong><p>Positive values are income. Expense entries use the amount field and leave Income unchecked.</p></div></div>
+            <div class="tutorial-step"><div><strong>Create budgets.</strong><p>Budgets are monthly caps by category in the active workspace.</p></div></div>
+            <div class="tutorial-step"><div><strong>Run the analyst.</strong><p>The Analyst page creates a health score, budget warnings, recurring detection, anomalies, and member load analysis.</p></div></div>
+            <div class="tutorial-step"><div><strong>Ask Ouroboros Advisor.</strong><p>Use the Advisor page to ask finance questions about the active workspace. It does not call an external AI provider.</p></div></div>
+            <div class="tutorial-step"><div><strong>Model a decision.</strong><p>Use the Planning Toolkit for emergency-fund, debt-payoff, savings-goal, and allocation scenarios.</p></div></div>
+            <div class="tutorial-step"><div><strong>Use Settings.</strong><p>Change theme, animations, chart types, reporting currency, display currency, and real-time conversion preferences.</p></div></div>
+        </div>
+    </section>
+    <section class="panel hint-panel">
+        <h2>Common Mistakes</h2>
+        <div class="mini-list">
+            <div><span>Wrong workspace</span><strong>Check the sidebar before adding data.</strong></div>
+            <div><span>Missing categories</span><strong>Add categories before bulk imports.</strong></div>
+            <div><span>No budgets</span><strong>The analyst needs budgets for variance checks.</strong></div>
+            <div><span>No members linked</span><strong>Family analysis improves when transactions are linked to members.</strong></div>
+        </div>
+    </section>
+</div>
+<div class="help-grid">
+    <section class="panel"><h2>Transactions</h2><p>Manual entries support category and member dropdowns. The transaction list uses virtualization to keep large local lists responsive.</p></section>
+    <section class="panel"><h2>Currency Conversion</h2><p>Transactions keep their original amount and currency snapshot. Display currency converts the visible UI when online using the local server as the proxy. Offline mode keeps the app usable.</p></section>
+    <section class="panel"><h2>Ouroboros Advisor</h2><p>The advisor answers finance questions from the active workspace without sending data to an external AI provider.</p></section>
+    <section class="panel"><h2>Calendar</h2><p>Calendar shows daily income, expenses, net movement, and transaction summaries for the active workspace.</p></section>
+    <section class="panel"><h2>Reports</h2><p>Exports are generated locally. Excel export escapes spreadsheet formula prefixes.</p></section>
+    <section class="panel"><h2>Private by Default</h2><p>Local mode blocks non-loopback requests. Hosted mode requires HTTPS, a strong secret, and a private production database.</p></section>
+</div>
+<section class="panel"><h2>CSV Rules</h2><p>Use one signed amount column or separate debit/credit columns. Positive signed values are income. Negative signed values are expenses. Empty category values use your Rules page.</p></section>
+{% endblock %}

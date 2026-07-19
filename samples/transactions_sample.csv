@@ -1,0 +1,16 @@
+date,description,amount,category
+2026-01-02,Salary,5200.00,Income
+2026-01-03,Freelance Client,850.00,Income
+2026-01-04,Rent,-1850.00,Housing
+2026-01-05,Grocery Market,-145.32,Food
+2026-01-07,School Tuition,-425.00,School Fees
+2026-01-08,Internet Bill,-79.99,Utilities
+2026-01-11,Medical Checkup,-120.00,Medical
+2026-01-15,Restaurant Dinner,-86.40,Dining
+2026-01-18,Fuel Station,-61.25,Transport
+2026-01-20,Streaming Service,-18.99,Subscriptions
+2026-02-02,Salary,5200.00,Income
+2026-02-04,Rent,-1850.00,Housing
+2026-02-05,Grocery Market,-164.20,Food
+2026-02-07,School Tuition,-425.00,School Fees
+2026-02-08,Internet Bill,-79.99,Utilities

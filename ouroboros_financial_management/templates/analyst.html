@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<section class="panel hero-panel">
+    <div>
+        <h2>Full Budget Analyst</h2>
+        <p>This is separate from the dashboard. It scans the active workspace for budgets, transactions, recurring charges, anomalies, member roles, dependent load, and monthly trends.</p>
+    </div>
+    <div class="button-row">
+        <a class="soft-button" href="{{ url_for('main.ai_page') }}">Open Ouroboros Advisor</a>
+        <form method="post" action="{{ url_for('main.analyst_run') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="primary-button" type="submit">Run Full Analyst</button>
+        </form>
+    </div>
+</section>
+
+{% if run %}
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header"><div><h2>Ouroboros Advisor Summary</h2><p>{{ run.period_label }} · generated {{ run.created_at.strftime('%Y-%m-%d %H:%M') if run.created_at else '' }}</p></div><div class="score-ring small"><span>{{ run.health_score }}</span><small>/100</small></div></div>
+        <p class="summary-text large">{{ run.summary_text }}</p>
+        <div class="action-list">
+            {% for item in result.priority_actions %}<div class="action-item">{{ item }}</div>{% endfor %}
+        </div>
+    </section>
+    <section class="panel chart-panel">
+        <div class="panel-header"><div><h2>Monthly Analytics</h2><p>Income, expense, and net trend with live display conversion.</p></div></div>
+        <canvas id="analystMonthly" height="320"></canvas>
+    </section>
+</div>
+
+<div class="dashboard-grid">
+    <article class="metric-card tone-positive"><div class="metric-label">Income</div><div class="metric-value">{{ m.money(result.totals.income_cents) }}</div><div class="metric-sub">All analyzed transactions</div></article>
+    <article class="metric-card tone-warning"><div class="metric-label">Expenses</div><div class="metric-value">{{ m.money(result.totals.expense_cents) }}</div><div class="metric-sub">All analyzed transactions</div></article>
+    <article class="metric-card tone-primary"><div class="metric-label">Net</div><div class="metric-value">{{ m.money(result.totals.net_cents) }}</div><div class="metric-sub">Cash flow result</div></article>
+    <article class="metric-card tone-neutral"><div class="metric-label">Savings Rate</div><div class="metric-value">{{ result.totals.savings_rate }}%</div><div class="metric-sub">Net / income</div></article>
+</div>
+
+<div class="panel-grid thirds">
+    <section class="panel"><div class="panel-header"><div><h2>Top Expense Categories</h2></div></div><div class="mini-list">{% for item in result.top_categories %}<div><span>{{ item.category }}</span><strong>{{ m.money(item.amount_cents) }}</strong></div>{% else %}<div>No expenses.</div>{% endfor %}</div></section>
+    <section class="panel"><div class="panel-header"><div><h2>Recurring Transactions</h2></div></div><div class="mini-list">{% for item in result.recurring %}<div><span>{{ item.description }} · {{ item.cadence }}</span><strong>{{ m.money(item.amount_cents) }}</strong></div>{% else %}<div>No strong recurring pattern found.</div>{% endfor %}</div></section>
+    <section class="panel"><div class="panel-header"><div><h2>Anomalies</h2></div></div><div class="mini-list">{% for item in result.anomalies %}<div><span>{{ item.description }} · {{ item.category }}</span><strong>{{ m.money(item.amount_cents) }}</strong></div>{% else %}<div>No large outliers found.</div>{% endfor %}</div></section>
+</div>
+
+<div class="panel-grid wide-right">
+    <section class="panel">
+        <div class="panel-header"><div><h2>Member and Role Analysis</h2><p>Useful for family, company, and group workspaces.</p></div></div>
+        <div class="mini-list">
+            <div><span>Breadwinners</span><strong>{{ result.members.breadwinner_count }}</strong></div>
+            <div><span>Dependents</span><strong>{{ result.members.dependent_count }}</strong></div>
+            <div><span>Planned income</span><strong>{{ m.money(result.members.planned_income_cents) }}</strong></div>
+            <div><span>Planned cost</span><strong>{{ m.money(result.members.planned_cost_cents) }}</strong></div>
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-header"><div><h2>Trend Findings</h2></div></div>
+        <div class="mini-list">{% for item in result.trend_findings %}<div>{{ item }}</div>{% else %}<div>No strong trend yet. Add more months of data.</div>{% endfor %}</div>
+    </section>
+</div>
+
+<section class="panel">
+    <div class="panel-header"><div><h2>Budget Analysis</h2><p>Full budget table from the analyst run.</p></div></div>
+    <div class="table-wrap">
+        <table><thead><tr><th>Category</th><th>Period</th><th class="right">Budget</th><th class="right">Actual</th><th class="right">Remaining</th><th>State</th></tr></thead>
+        <tbody>{% for row in result.budget_rows %}<tr><td>{{ row.category }}</td><td>{{ row.label }}</td><td class="right">{{ m.money(row.budget_cents) }}</td><td class="right negative">{{ m.money(row.actual_cents) }}</td><td class="right {% if row.remaining_cents >= 0 %}positive{% else %}negative{% endif %}">{{ m.money(row.remaining_cents) }}</td><td>{% if row.is_over %}<span class="pill danger-pill">Over</span>{% else %}<span class="pill good-pill">OK</span>{% endif %}</td></tr>{% else %}<tr><td colspan="6" class="empty-cell">No budgets to analyze.</td></tr>{% endfor %}</tbody></table>
+    </div>
+</section>
+{% else %}
+<section class="panel"><div class="empty-state">No analyst run yet. Add transactions and budgets, then run the analyst.</div></section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if run %}
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+    FinanceCharts.renderIncomeExpense('analystMonthly', {
+        labels: {{ result.monthly|map(attribute='label')|list|tojson }},
+        income: {{ result.monthly|map(attribute='income')|list|tojson }},
+        expenses: {{ result.monthly|map(attribute='expenses')|list|tojson }},
+        net: {{ result.monthly|map(attribute='net')|list|tojson }},
+        type: 'line',
+        currency: '{{ base_currency_symbol }}'
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

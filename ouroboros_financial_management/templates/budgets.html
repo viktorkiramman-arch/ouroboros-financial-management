@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header"><div><h2>Add or Update Budget</h2><p>Same category/month/year updates the existing amount for this workspace.</p></div></div>
+        <form method="post" class="grid-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label>Category<select name="category" required>{% for cat in categories %}<option value="{{ cat.name }}">{{ cat.name }}</option>{% endfor %}</select></label>
+            <label>Month<input type="number" name="month" min="1" max="12" value="{{ today.month }}" required></label>
+            <label>Year<input type="number" name="year" min="1900" max="2200" value="{{ today.year }}" required></label>
+            <label>Budget amount<input type="number" step="0.01" min="0.01" name="amount" required></label>
+            <div class="form-actions"><button class="primary-button" type="submit">Save Budget</button></div>
+        </form>
+    </section>
+    <section class="panel hint-panel">
+        <h2>Budget behavior</h2>
+        <p>Budgets compare expense transactions against category, month, year, and active workspace. Income is ignored for utilization.</p>
+    </section>
+</div>
+<section class="panel">
+    <div class="panel-header"><div><h2>Budget Table</h2><p>Actual spending comes from transactions.</p></div></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Category</th><th>Period</th><th class="right">Budget</th><th class="right">Actual</th><th class="right">Remaining</th><th>Utilization</th><th></th></tr></thead>
+            <tbody>
+            {% for row in rows %}
+            <tr>
+                <td><span class="pill">{{ row.category }}</span></td>
+                <td>{{ row.label }}</td>
+                <td class="right">{{ m.money(row.budget_cents) }}</td>
+                <td class="right negative">{{ m.money(row.actual_cents) }}</td>
+                <td class="right {% if row.remaining_cents >= 0 %}positive{% else %}negative{% endif %}">{{ m.money(row.remaining_cents) }}</td>
+                <td><div class="progress"><span style="width: {{ 100 if row.utilization > 100 else row.utilization }}%"></span></div><small>{{ row.utilization }}%</small></td>
+                <td class="right"><form method="post" action="{{ url_for('main.delete_budget', budget_id=row.id) }}" data-confirm="Delete this budget?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="link-button danger" type="submit">Delete</button></form></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="empty-cell">No budgets yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

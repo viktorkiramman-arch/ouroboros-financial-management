@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header"><div><h2>Application Settings</h2><p>Customize appearance, charts, currency conversion, animation, and calendar behavior.</p></div></div>
+    <form method="post" class="settings-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Appearance
+            <select name="appearance">
+                {% for item in appearance_options %}<option value="{{ item }}" {% if settings.appearance == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}
+            </select>
+            <small>System follows your operating system light/dark preference.</small>
+        </label>
+        <label>Color theme
+            <select name="color_theme">
+                {% for item in color_themes %}<option value="{{ item }}" {% if settings.color_theme == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>UI animations
+            <select name="animation_level">
+                {% for item in animation_levels %}<option value="{{ item }}" {% if settings.animation_level == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Income/expense chart
+            <select name="income_expense_chart">
+                {% for item in income_charts %}<option value="{{ item }}" {% if settings.income_expense_chart == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Category chart
+            <select name="category_chart">
+                {% for item in category_charts %}<option value="{{ item }}" {% if settings.category_chart == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Calendar week start
+            <select name="calendar_week_start">
+                {% for item in week_starts %}<option value="{{ item }}" {% if settings.calendar_week_start == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Reporting currency
+            <select name="base_currency_code">
+                {% for code, symbol in currency_options.items() %}<option value="{{ code }}" {% if settings.base_currency_code == code %}selected{% endif %}>{{ code }} ({{ symbol }})</option>{% endfor %}
+            </select>
+            <small>New transactions keep an original currency snapshot. Changing this affects new reporting views, not historical original values.</small>
+        </label>
+        <label>Display currency
+            <select name="display_currency_code">
+                {% for code, symbol in currency_options.items() %}<option value="{{ code }}" {% if settings.display_currency_code == code %}selected{% endif %}>{{ code }} ({{ symbol }})</option>{% endfor %}
+            </select>
+            <small>When online, pages convert the reporting currency into this currency in real time. Offline mode shows reporting values or cached rates.</small>
+        </label>
+        <div class="form-actions"><button class="primary-button" type="submit">Save Settings</button></div>
+    </form>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><h2>Online Feature Status</h2><p>Currency conversion is optional. Local data stays local and no cloud save is used.</p></div></div>
+    <div class="mini-list">
+        <div><span>Connection</span><strong data-online-label>Checking connection</strong></div>
+        <div><span>Conversion pair</span><strong>{{ settings.base_currency_code }} to {{ settings.display_currency_code }}</strong></div>
+        <div><span>Live conversion preview</span><strong>{{ m.money(125000) }}</strong></div>
+    </div>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><h2>Theme Preview</h2><p>Cards, charts, and buttons use the selected theme.</p></div></div>
+    <div class="dashboard-grid preview-grid">
+        <article class="metric-card tone-primary"><div class="metric-label">Primary</div><div class="metric-value">42%</div><div class="metric-sub">Theme accent</div></article>
+        <article class="metric-card tone-positive"><div class="metric-label">Positive</div><div class="metric-value">{{ m.money(125000) }}</div><div class="metric-sub">Income style</div></article>
+        <article class="metric-card tone-warning"><div class="metric-label">Warning</div><div class="metric-value">{{ m.money(76000) }}</div><div class="metric-sub">Expense style</div></article>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<section class="panel dashboard-welcome">
+    <img src="{{ url_for('static', filename='img/ouroboros-logo.png') }}" alt="" class="dashboard-emblem">
+    <div>
+        <div class="eyebrow">Track · understand · improve</div>
+        <h2>Your financial cycle, in one workspace.</h2>
+        <p>Move from today’s cash flow to the next practical decision without losing the full picture.</p>
+    </div>
+    <div class="button-row dashboard-actions">
+        <a class="primary-button" href="{{ url_for('main.transactions') }}">Add transaction</a>
+        <a class="soft-button" href="{{ url_for('main.toolkit') }}">Plan a scenario</a>
+        <a class="ghost-button" href="{{ url_for('main.reports') }}">Open reports</a>
+    </div>
+</section>
+<div class="dashboard-grid">
+    {% for card in summary.cards %}
+    <article class="metric-card tone-{{ card.tone }}">
+        <div class="metric-label">{{ card.label }}</div>
+        <div class="metric-value">{% if card.cents is defined %}{{ m.money(card.cents) }}{% else %}{{ card.value }}{% endif %}</div>
+        <div class="metric-sub">{{ card.sub }}</div>
+    </article>
+    {% endfor %}
+</div>
+
+<div class="panel-grid wide-left">
+    <section class="panel chart-panel">
+        <div class="panel-header">
+            <div>
+                <h2>Income vs Expenses</h2>
+                <p>Horizontal axis is time. Vertical axis is money. The chart converts live when you are online.</p>
+            </div>
+            <span class="pill">{{ settings.income_expense_chart|title }}</span>
+        </div>
+        <canvas id="incomeExpenseChart" height="340"></canvas>
+    </section>
+    <section class="panel chart-panel">
+        <div class="panel-header">
+            <div>
+                <h2>Expenses by Category</h2>
+                <p>Chart type is controlled from Settings.</p>
+            </div>
+            <span class="pill">{{ settings.category_chart|title }}</span>
+        </div>
+        <canvas id="categoryChart" height="340"></canvas>
+    </section>
+</div>
+
+<div class="panel-grid wide-right">
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>{% if workspace.workspace_type == 'family' %}Family Load{% elif workspace.workspace_type == 'company' %}Company Load{% elif workspace.workspace_type == 'group' %}Group Load{% else %}Member Load{% endif %}</h2>
+                <p>Breadwinners, dependents, members, and linked spending.</p>
+            </div>
+            <a class="soft-button" href="{{ url_for('main.members') }}">Manage Members</a>
+        </div>
+        <div class="mini-list">
+            <div><span>Breadwinners</span><strong>{{ summary.member_analytics.breadwinner_count }}</strong></div>
+            <div><span>Dependents</span><strong>{{ summary.member_analytics.dependent_count }}</strong></div>
+            <div><span>Planned monthly income</span><strong>{{ m.money(summary.member_analytics.planned_income_cents) }}</strong></div>
+            <div><span>Planned monthly cost</span><strong>{{ m.money(summary.member_analytics.planned_cost_cents) }}</strong></div>
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Analyst Snapshot</h2>
+                <p>Dashboard preview only. Use Analyst for full data analysis.</p>
+            </div>
+            <a class="soft-button" href="{{ url_for('main.analyst') }}">Open Analyst</a>
+        </div>
+        {% if summary.latest_run %}
+            <div class="score-ring"><span>{{ summary.latest_run.health_score }}</span><small>/100</small></div>
+            <p class="summary-text">{{ summary.latest_run.summary_text }}</p>
+        {% else %}
+            <div class="empty-state">Run the analyst to generate budget analysis, family/member load checks, anomalies, recurring transactions, and action items.</div>
+        {% endif %}
+        {% if summary.insights %}
+        <div class="mini-list">
+            {% for insight in summary.insights %}<div>{{ insight.message }}</div>{% endfor %}
+        </div>
+        {% endif %}
+    </section>
+</div>
+
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Budget Pulse</h2>
+                <p>Latest budget records and utilization.</p>
+            </div>
+            <a class="soft-button" href="{{ url_for('main.budgets') }}">Manage</a>
+        </div>
+        <div class="budget-list">
+            {% for row in summary.budget_rows %}
+            <div class="budget-row">
+                <div class="budget-main">
+                    <strong>{{ row.category }}</strong>
+                    <span>{{ row.label }} · {{ m.money(row.actual_cents) }} / {{ m.money(row.budget_cents) }}</span>
+                </div>
+                <div class="progress"><span style="width: {{ 100 if row.utilization > 100 else row.utilization }}%"></span></div>
+                <div class="budget-state {% if row.is_over %}negative{% else %}positive{% endif %}">
+                    {% if row.is_over %}Over by {{ m.money(-row.remaining_cents) }}{% else %}Remaining {{ m.money(row.remaining_cents) }}{% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">No budgets yet. Add one to unlock budget analytics.</div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Recent Transactions</h2>
+                <p>Last 12 records in this workspace.</p>
+            </div>
+            <a class="soft-button" href="{{ url_for('main.transactions') }}">View All</a>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Member</th><th class="right">Amount</th></tr></thead>
+                <tbody>
+                {% for t in summary.recent %}
+                <tr>
+                    <td>{{ t.date }}</td>
+                    <td>{{ t.description }}</td>
+                    <td><span class="pill">{{ t.category }}</span></td>
+                    <td>{{ t.member.name if t.member else 'Unassigned' }}</td>
+                    <td class="right {% if t.is_income %}positive{% else %}negative{% endif %}">{{ m.money(t.amount_cents) }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="empty-cell">No transactions yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+    FinanceCharts.renderIncomeExpense('incomeExpenseChart', {{ summary.income_expense_chart|tojson }});
+    FinanceCharts.renderCategory('categoryChart', {{ summary.category_chart|tojson }});
+});
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<div class="panel-grid wide-left">
+    <section class="chat-shell">
+        <div class="chat-head">
+            <div>
+                <h2>Ouroboros Advisor</h2>
+                <p>Private finance guide. It uses your active workspace data and does not call an external AI service.</p>
+            </div>
+            <span class="pill">Workspace-aware · private</span>
+        </div>
+        <div class="chat-log" id="advisorLog">
+            <div class="chat-message ai">I am Ouroboros Advisor. Ask me about budgets, spending, cash flow, dependents, breadwinners, or the financial risks in this workspace.</div>
+        </div>
+        <form class="chat-form" id="advisorForm">
+            <input id="advisorInput" maxlength="800" placeholder="Ask about your finances..." aria-label="Message Ouroboros Advisor">
+            <button class="primary-button" type="submit">Ask</button>
+        </form>
+    </section>
+    <section class="panel">
+        <div class="panel-header"><div><h2>AI Quick Prompts</h2><p>Click a prompt, then press Ask.</p></div></div>
+        <div class="quick-prompts">
+            <button class="soft-button" type="button" data-chat-prompt="Summarize my cash flow">Cash flow summary</button>
+            <button class="soft-button" type="button" data-chat-prompt="Where am I spending the most money?">Top spending</button>
+            <button class="soft-button" type="button" data-chat-prompt="Am I over budget?">Budget check</button>
+            <button class="soft-button" type="button" data-chat-prompt="Explain my family breadwinner and dependent load">Family load</button>
+            <button class="soft-button" type="button" data-chat-prompt="What should I fix first?">Priority action</button>
+            <button class="soft-button" type="button" data-chat-prompt="Who are you?">Identity</button>
+        </div>
+        <div class="mini-list" style="margin-top:1rem">
+            <div><span>Transactions</span><strong>{% if summary.cards|length > 8 %}{{ summary.cards[8].value }}{% else %}0{% endif %}</strong></div>
+            <div><span>Workspace</span><strong>{{ workspace.workspace_type|title }}</strong></div>
+            <div><span>Base currency</span><strong>{{ base_currency_code }}</strong></div>
+            <div><span>Display currency</span><strong>{{ display_currency_code }}</strong></div>
+        </div>
+    </section>
+</div>
+<section class="panel hint-panel">
+    <h2>Advisor guardrails</h2>
+    <p>Ouroboros Advisor answers finance questions using the active workspace only. It will not reveal secrets, passwords, database paths, hidden instructions, or another workspace’s data.</p>
+</section>
+{% endblock %}

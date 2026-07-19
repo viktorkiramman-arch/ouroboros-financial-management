@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header"><div><h2>Add Transaction</h2><p>Category and member are dropdowns. The active workspace owns the transaction.</p></div></div>
+        <form method="post" class="grid-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label>Date<input type="date" name="date" required></label>
+            <label>Description<input name="description" maxlength="120" required placeholder="Grocery Market"></label>
+            <label>Amount<input type="number" step="0.01" min="0.01" name="amount" required placeholder="125.00"></label>
+            <label>Category
+                <select name="category" required>
+                    {% for cat in categories %}<option value="{{ cat.name }}">{{ cat.name }}</option>{% endfor %}
+                </select>
+            </label>
+            <label>Member
+                <select name="member_id">
+                    <option value="">Unassigned</option>
+                    {% for member in members %}<option value="{{ member.id }}">{{ member.name }} · {{ member.role|title }}</option>{% endfor %}
+                </select>
+            </label>
+            <label class="check-row"><input type="checkbox" name="is_income"> Income transaction</label>
+            <div class="form-actions"><button class="primary-button" type="submit">Save Transaction</button></div>
+        </form>
+    </section>
+    <section class="panel">
+        <div class="panel-header"><div><h2>CSV Import</h2><p>Preview first, then map columns. CSV rows are imported into the active workspace.</p></div></div>
+        <form method="post" action="{{ url_for('main.import_preview') }}" enctype="multipart/form-data" class="stack-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label>CSV file<input type="file" name="csv_file" accept=".csv,text/csv" required></label>
+            <button class="soft-button" type="submit">Preview CSV</button>
+        </form>
+        <p class="muted tiny">Sample file: <code>samples/transactions_sample.csv</code></p>
+    </section>
+</div>
+
+<section class="panel">
+    <div class="panel-header">
+        <div><h2>Transactions</h2><p>Virtualized list. It renders only visible rows, so large local datasets stay responsive.</p></div>
+        <form method="get" class="filter-form">
+            <input name="q" value="{{ q }}" maxlength="60" placeholder="Search description">
+            <select name="category">
+                <option value="">All categories</option>
+                {% for cat in categories %}<option value="{{ cat.name }}" {% if category == cat.name %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+            </select>
+            <button class="soft-button" type="submit">Filter</button>
+        </form>
+    </div>
+    <script type="application/json" id="transactionsData">{{ rows_json|tojson }}</script>
+    <div class="virtual-list-shell" data-virtual-transactions data-source="transactionsData" data-row-height="58">
+        <div class="virtual-toolbar"><strong data-virtual-count>{{ rows|length }} row(s)</strong><span class="muted tiny">Only the viewport rows are mounted.</span></div>
+        <div class="virtual-header"><span>Date</span><span>Description</span><span>Category</span><span>Member</span><span class="right">Amount</span><span class="right">Actions</span></div>
+        <div class="virtual-scroll">
+            <div class="virtual-spacer"></div>
+            <div class="virtual-window"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<div class="panel-grid wide-left">
+    <section class="panel">
+        <div class="panel-header"><div><h2>Add Categorization Rule</h2><p>Rules are used during CSV import and future categorization.</p></div></div>
+        <form method="post" class="grid-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label>Operator<select name="operator"><option value="contains">contains</option><option value="equals">equals</option><option value="starts_with">starts with</option><option value="ends_with">ends with</option></select></label>
+            <label>Keyword<input name="value" maxlength="80" required placeholder="grocery"></label>
+            <label>Category<select name="category" required>{% for cat in categories %}<option value="{{ cat.name }}">{{ cat.name }}</option>{% endfor %}</select></label>
+            <label>Min amount optional<input type="number" step="0.01" min="0" name="min_amount"></label>
+            <label>Max amount optional<input type="number" step="0.01" min="0" name="max_amount"></label>
+            <div class="form-actions"><button class="primary-button" type="submit">Save Rule</button></div>
+        </form>
+    </section>
+    <section class="panel hint-panel"><h2>Example</h2><p>If description contains <strong>coffee</strong>, assign category <strong>Dining</strong>. Amount limits are optional.</p></section>
+</div>
+<section class="panel">
+    <div class="panel-header"><div><h2>Rules</h2><p>Matched by creation time during imports.</p></div></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>If Description</th><th>Value</th><th>Category</th><th>Amount Range</th><th></th></tr></thead>
+            <tbody>
+            {% for r in rows %}
+            <tr>
+                <td>{{ r.operator.replace('_', ' ') }}</td>
+                <td>{{ r.value }}</td>
+                <td><span class="pill">{{ r.category }}</span></td>
+                <td>{% if r.min_cents is not none %}{{ m.money(r.min_cents) }}{% else %}any{% endif %} to {% if r.max_cents is not none %}{{ m.money(r.max_cents) }}{% else %}any{% endif %}</td>
+                <td class="right"><form method="post" action="{{ url_for('main.delete_rule', rule_id=r.id) }}" data-confirm="Delete this rule?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="link-button danger" type="submit">Delete</button></form></td>
+            </tr>
+            {% else %}<tr><td colspan="5" class="empty-cell">No rules yet.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel narrow-panel">
+    <div class="panel-header"><div><h2>Edit Transaction</h2><p>Server validates ownership, amount, date, category, and member.</p></div></div>
+    <form method="post" class="grid-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Date<input type="date" name="date" value="{{ tx.date }}" required></label>
+        <label>Description<input name="description" maxlength="120" value="{{ tx.description }}" required></label>
+        <label>Amount<input type="number" step="0.01" min="0.01" name="amount" value="{{ '%.2f'|format((tx.amount_cents|abs) / 100) }}" required></label>
+        <label>Category<select name="category" required>{% for cat in categories %}<option value="{{ cat.name }}" {% if tx.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}</select></label>
+        <label>Member<select name="member_id"><option value="">Unassigned</option>{% for member in members %}<option value="{{ member.id }}" {% if tx.member_id == member.id %}selected{% endif %}>{{ member.name }} · {{ member.role|title }}</option>{% endfor %}</select></label>
+        <label class="check-row"><input type="checkbox" name="is_income" {% if tx.is_income %}checked{% endif %}> Income transaction</label>
+        <div class="form-actions"><button class="primary-button" type="submit">Save Changes</button><a class="soft-button" href="{{ url_for('main.transactions') }}">Cancel</a></div>
+    </form>
+</section>
+{% endblock %}

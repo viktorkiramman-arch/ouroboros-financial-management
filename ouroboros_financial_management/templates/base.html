@@ -1,0 +1,155 @@
+{% import '_icons.html' as icons %}
+<!doctype html>
+<html lang="en"
+      data-appearance="{{ settings.appearance if settings else 'system' }}"
+      data-theme="{{ settings.color_theme if settings else 'ocean' }}"
+      data-motion="{{ settings.animation_level if settings else 'standard' }}"
+      data-base-currency="{{ base_currency_code }}"
+      data-base-symbol="{{ base_currency_symbol }}"
+      data-display-currency="{{ display_currency_code }}"
+      data-display-symbol="{{ display_currency_symbol }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#071426">
+    <meta name="description" content="Private budgeting, cash-flow analysis, planning tools, and financial reports.">
+    <title>{{ page_title or 'Dashboard' }} · Ouroboros Financial Management</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/ouroboros-logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+{% set nav_groups = [
+    ('Workspace', [
+        ('main.dashboard', 'Dashboard', url_for('main.dashboard'), 'dashboard'),
+        ('main.workspaces', 'Workspaces', url_for('main.workspaces'), 'workspace'),
+        ('main.members', 'Members', url_for('main.members'), 'users')
+    ]),
+    ('Analytics', [
+        ('main.analyst', 'Analyst', url_for('main.analyst'), 'brain'),
+        ('main.ai_page', 'Ouroboros Advisor', url_for('main.ai_page'), 'bot'),
+        ('main.calendar_view', 'Calendar', url_for('main.calendar_view'), 'calendar'),
+        ('main.reports', 'Reports', url_for('main.reports'), 'file'),
+        ('main.toolkit', 'Planning Toolkit', url_for('main.toolkit'), 'calculator')
+    ]),
+    ('Money', [
+        ('main.transactions', 'Transactions', url_for('main.transactions'), 'receipt'),
+        ('main.budgets', 'Budgets', url_for('main.budgets'), 'wallet'),
+        ('main.categories', 'Categories', url_for('main.categories'), 'tags'),
+        ('main.rules', 'Rules', url_for('main.rules'), 'rules')
+    ]),
+    ('System', [
+        ('main.settings', 'Settings', url_for('main.settings'), 'settings'),
+        ('main.help_page', 'Tutorial', url_for('main.help_page'), 'help')
+    ])
+] %}
+{% if current_user %}
+<div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+            <a class="brand-block" href="{{ url_for('main.dashboard') }}" aria-label="Ouroboros Financial Management dashboard">
+                <span class="brand-mark"><img src="{{ url_for('static', filename='img/ouroboros-logo.png') }}" alt=""></span>
+                <span class="brand-copy">
+                    <strong>Ouroboros</strong>
+                    <small>Financial Management</small>
+                </span>
+            </a>
+            <button class="icon-button sidebar-toggle" type="button" data-toggle-sidebar aria-label="Toggle sidebar">
+                {{ icons.icon('menu') }}
+            </button>
+        </div>
+
+        <div class="workspace-card mini-card">
+            <div class="mini-label">Active workspace</div>
+            <div class="workspace-name">{{ workspace.name if workspace else 'Workspace' }}</div>
+            <div class="workspace-meta">{{ workspace.workspace_type|title if workspace else 'Personal' }} · {{ base_currency_code }} reporting</div>
+            <a class="mini-link" href="{{ url_for('main.workspaces') }}">Manage workspace</a>
+        </div>
+
+        <nav class="side-nav" aria-label="Primary navigation">
+            {% for group, items in nav_groups %}
+            <div class="nav-section">
+                <div class="nav-heading">{{ group }}</div>
+                {% for endpoint, label, href, icon_name in items %}
+                <a class="side-link {% if request.endpoint == endpoint %}active{% endif %}" href="{{ href }}" title="{{ label }}">
+                    {{ icons.icon(icon_name) }}
+                    <span class="side-text">{{ label }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </nav>
+
+        <div class="sidebar-actions">
+            <form method="post" action="{{ url_for('main.analyst_run') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="primary-button full-button" type="submit">{{ icons.icon('brain') }} <span>Run Analyst</span></button>
+            </form>
+            <div class="online-card" id="onlineCard" data-online-card>
+                {{ icons.icon('globe') }}
+                <div>
+                    <strong data-online-label>Checking connection</strong>
+                    <small data-online-detail>Online-only features stay optional.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-chip">{{ icons.icon('users') }} <span>{{ current_user.username }}</span></div>
+            <div class="currency-chip"><span>{{ base_currency_code }}</span><span>to</span><span>{{ display_currency_code }}</span></div>
+            <form method="post" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="link-button danger sidebar-logout" type="submit">{{ icons.icon('logout') }} <span>Logout</span></button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-panel" id="mainPanel">
+        <button class="icon-button mobile-menu-button" type="button" data-toggle-sidebar aria-label="Open navigation">
+            {{ icons.icon('menu') }}
+        </button>
+        <section class="content-area">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-stack">
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <header class="page-hero animate-in">
+                <div>
+                    <div class="eyebrow">{{ workspace.name if workspace else 'Local workspace' }}</div>
+                    <h1>{{ page_title or 'Dashboard' }}</h1>
+                </div>
+                <div class="hero-meta">
+                    <span class="pill">{{ workspace.workspace_type|title if workspace else 'Personal' }}</span>
+                    <span class="pill" data-fx-pill>{{ base_currency_code }} reporting values{% if display_currency_code != base_currency_code %} · live {{ display_currency_code }} when online{% endif %}</span>
+                </div>
+            </header>
+            <section class="animate-in page-body">
+                {% block content %}{% endblock %}
+            </section>
+        </section>
+    </main>
+</div>
+{% else %}
+<main class="auth-shell">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-stack auth-flashes">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block auth_content %}{% block content_guest %}{% endblock %}{% endblock %}
+</main>
+{% endif %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

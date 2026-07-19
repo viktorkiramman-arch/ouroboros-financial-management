@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel toolkit-intro">
+    <div>
+        <div class="eyebrow">Plan before you commit</div>
+        <h2>Four private calculators. One clearer next move.</h2>
+        <p>Values stay in this browser tab and are never saved. Results are estimates, not financial advice.</p>
+    </div>
+    <span class="pill">{{ base_currency_code }} workspace</span>
+</section>
+
+<div class="toolkit-grid" data-toolkit>
+    <article class="panel calculator-card" data-calculator="emergency">
+        <div class="calculator-number">01</div>
+        <div class="panel-header"><div><h2>Emergency fund</h2><p>Find your reserve target and funding gap.</p></div></div>
+        <form class="stack-form" novalidate>
+            <label>Essential monthly spending
+                <input name="monthly_expenses" type="number" min="0" step="0.01" inputmode="decimal" value="2500" required>
+            </label>
+            <label>Current emergency savings
+                <input name="current_savings" type="number" min="0" step="0.01" inputmode="decimal" value="3000" required>
+            </label>
+            <label>Target reserve
+                <select name="target_months"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="9">9 months</option><option value="12">12 months</option></select>
+            </label>
+            <label>Monthly contribution
+                <input name="monthly_contribution" type="number" min="0" step="0.01" inputmode="decimal" value="500" required>
+            </label>
+            <button class="primary-button" type="submit">Calculate reserve</button>
+        </form>
+        <div class="calculator-result" aria-live="polite" data-result>Enter your plan to see the funding gap.</div>
+    </article>
+
+    <article class="panel calculator-card" data-calculator="debt">
+        <div class="calculator-number">02</div>
+        <div class="panel-header"><div><h2>Debt payoff</h2><p>Estimate payoff time and interest cost.</p></div></div>
+        <form class="stack-form" novalidate>
+            <label>Current balance
+                <input name="balance" type="number" min="0.01" step="0.01" inputmode="decimal" value="10000" required>
+            </label>
+            <label>Annual interest rate (%)
+                <input name="apr" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="18" required>
+            </label>
+            <label>Monthly payment
+                <input name="payment" type="number" min="0.01" step="0.01" inputmode="decimal" value="350" required>
+            </label>
+            <button class="primary-button" type="submit">Estimate payoff</button>
+        </form>
+        <div class="calculator-result" aria-live="polite" data-result>Use the real APR from your latest statement.</div>
+    </article>
+
+    <article class="panel calculator-card" data-calculator="goal">
+        <div class="calculator-number">03</div>
+        <div class="panel-header"><div><h2>Savings goal</h2><p>Project how long a goal may take.</p></div></div>
+        <form class="stack-form" novalidate>
+            <label>Goal amount
+                <input name="target" type="number" min="0.01" step="0.01" inputmode="decimal" value="20000" required>
+            </label>
+            <label>Already saved
+                <input name="saved" type="number" min="0" step="0.01" inputmode="decimal" value="5000" required>
+            </label>
+            <label>Monthly contribution
+                <input name="contribution" type="number" min="0" step="0.01" inputmode="decimal" value="600" required>
+            </label>
+            <label>Estimated annual yield (%)
+                <input name="apy" type="number" min="0" max="30" step="0.01" inputmode="decimal" value="4" required>
+            </label>
+            <button class="primary-button" type="submit">Project goal</button>
+        </form>
+        <div class="calculator-result" aria-live="polite" data-result>Returns vary; use a conservative yield.</div>
+    </article>
+
+    <article class="panel calculator-card" data-calculator="allocation">
+        <div class="calculator-number">04</div>
+        <div class="panel-header"><div><h2>50 / 30 / 20 guide</h2><p>Turn take-home income into a starting allocation.</p></div></div>
+        <form class="stack-form" novalidate>
+            <label>Monthly take-home income
+                <input name="income" type="number" min="0.01" step="0.01" inputmode="decimal" value="5000" required>
+            </label>
+            <button class="primary-button" type="submit">Build allocation</button>
+        </form>
+        <div class="calculator-result" aria-live="polite" data-result>This is a flexible baseline, not a rule.</div>
+    </article>
+</div>
+
+<section class="panel hint-panel">
+    <div class="panel-header"><div><h2>Use the result well</h2><p>Run scenarios, then convert the decision into a budget or recurring transaction review.</p></div></div>
+    <div class="button-row">
+        <a class="soft-button" href="{{ url_for('main.budgets') }}">Adjust budgets</a>
+        <a class="soft-button" href="{{ url_for('main.transactions') }}">Review transactions</a>
+        <a class="soft-button" href="{{ url_for('main.ai_page') }}">Ask Ouroboros Advisor</a>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/toolkit.js') }}"></script>{% endblock %}

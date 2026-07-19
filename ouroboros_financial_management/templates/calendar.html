@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import '_money.html' as m %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header calendar-head">
+        <div><h2>{{ data.label }}</h2><p>Monthly calendar summary of income, expense, net, and daily transactions.</p></div>
+        <div class="button-row"><a class="soft-button" href="{{ url_for('main.calendar_view', year=prev[0], month=prev[1]) }}">Previous</a><a class="soft-button" href="{{ url_for('main.calendar_view', year=next[0], month=next[1]) }}">Next</a></div>
+    </div>
+    <div class="dashboard-grid compact">
+        <article class="metric-card tone-positive"><div class="metric-label">Income</div><div class="metric-value">{{ m.money(data.summary.income_cents) }}</div></article>
+        <article class="metric-card tone-warning"><div class="metric-label">Expenses</div><div class="metric-value">{{ m.money(data.summary.expense_cents) }}</div></article>
+        <article class="metric-card tone-primary"><div class="metric-label">Net</div><div class="metric-value">{{ m.money(data.summary.net_cents) }}</div></article>
+        <article class="metric-card tone-neutral"><div class="metric-label">Transactions</div><div class="metric-value">{{ data.summary.transaction_count }}</div></article>
+    </div>
+</section>
+<section class="panel calendar-panel">
+    <div class="calendar-grid header-row">{% for day in data.weekdays %}<div>{{ day }}</div>{% endfor %}</div>
+    <div class="calendar-grid">
+        {% for cell in data.cells %}
+        <div class="calendar-cell {% if not cell.in_month %}muted-cell{% endif %}">
+            <div class="cell-top"><strong>{{ cell.day }}</strong>{% if cell.count %}<span class="pill">{{ cell.count }}</span>{% endif %}</div>
+            {% if cell.income_cents %}<div class="cell-money positive">+{{ m.money(cell.income_cents) }}</div>{% endif %}
+            {% if cell.expense_cents %}<div class="cell-money negative">-{{ m.money(cell.expense_cents) }}</div>{% endif %}
+            {% for item in cell['items'][:2] %}<div class="cell-item">{{ item.description }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><h2>Calendar Notes</h2><p>Quick summary for the month.</p></div></div>
+    <div class="mini-list">
+        <div><span>Busiest day</span><strong>{% if data.summary.busiest_day %}{{ data.summary.busiest_day }} with {{ data.summary.busiest_count }} transaction(s){% else %}No transactions{% endif %}</strong></div>
+        <div><span>Largest expense</span><strong>{% if data.summary.biggest_expense %}{{ data.summary.biggest_expense.description }} · {{ m.money(data.summary.biggest_expense.amount_cents) }}{% else %}No expense transactions{% endif %}</strong></div>
+    </div>
+</section>
+{% endblock %}
