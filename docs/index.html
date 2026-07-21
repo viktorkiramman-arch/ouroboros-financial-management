@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Static product preview of Ouroboros Financial Management.">
+    <meta name="theme-color" content="#071426">
+    <title>Ouroboros Financial Management — Preview</title>
+    <link rel="icon" type="image/png" href="assets/ouroboros-logo.png">
+    <link rel="stylesheet" href="assets/preview.css">
+</head>
+<body>
+<div class="preview-banner" role="note">
+    <span class="status-dot" aria-hidden="true"></span>
+    Static product preview <span aria-hidden="true">·</span> Sample data only
+    <a href="https://github.com/viktorkiramman-arch/ouroboros-financial-management">View source</a>
+</div>
+
+<div class="app-shell">
+    <aside class="sidebar" aria-label="Preview navigation">
+        <a class="brand" href="#overview" aria-label="Ouroboros Financial Management preview home">
+            <span class="brand-mark"><img src="assets/ouroboros-logo.png" alt=""></span>
+            <span><strong>Ouroboros</strong><small>Financial Management</small></span>
+        </a>
+
+        <section class="workspace-card" aria-label="Sample workspace">
+            <span class="label">Active workspace</span>
+            <strong>Personal Finance</strong>
+            <small>Personal · USD reporting</small>
+        </section>
+
+        <nav>
+            <span class="nav-title">Workspace</span>
+            <a class="nav-link active" href="#overview"><span>◫</span>Dashboard</a>
+            <a class="nav-link" href="#cashflow"><span>↗</span>Cash flow</a>
+            <a class="nav-link" href="#budgets"><span>◉</span>Budgets</a>
+            <span class="nav-title">Plan</span>
+            <a class="nav-link" href="#toolkit"><span>⌁</span>Planning toolkit</a>
+            <a class="nav-link" href="#advisor"><span>✦</span>Ouroboros Advisor</a>
+        </nav>
+
+        <div class="sidebar-note">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span><strong>Private by design</strong><small>Local-first financial workspace</small></span>
+        </div>
+    </aside>
+
+    <main id="overview">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">Personal Finance</span>
+                <h1>Dashboard</h1>
+                <p>See the cycle. Understand the signal. Make the next move.</p>
+            </div>
+            <div class="period-switcher" aria-label="Preview period">
+                <button type="button" data-period="30d">30D</button>
+                <button type="button" data-period="90d" class="active">90D</button>
+                <button type="button" data-period="ytd">YTD</button>
+            </div>
+        </header>
+
+        <section class="hero-card">
+            <img src="assets/ouroboros-logo.png" alt="" class="hero-logo">
+            <div>
+                <span class="eyebrow">Track · understand · improve</span>
+                <h2>Your financial cycle, in one workspace.</h2>
+                <p>Move from today’s cash flow to the next practical decision without losing the full picture.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="button primary" href="#cashflow">Explore dashboard</a>
+                <a class="button secondary" href="#toolkit">Try planning tools</a>
+            </div>
+        </section>
+
+        <section class="metric-grid" aria-label="Financial summary">
+            <article class="metric-card"><span>Total income</span><strong data-metric="income">$18,420</strong><small>Across the selected period</small></article>
+            <article class="metric-card"><span>Total expenses</span><strong data-metric="expenses">$11,780</strong><small>64% of income</small></article>
+            <article class="metric-card positive"><span>Net cash flow</span><strong data-metric="net">+$6,640</strong><small>36% savings rate</small></article>
+            <article class="metric-card"><span>Health score</span><strong data-metric="score">82<span>/100</span></strong><small>Strong and improving</small></article>
+        </section>
+
+        <section class="content-grid" id="cashflow">
+            <article class="panel chart-panel">
+                <div class="panel-head"><div><span class="eyebrow">Cash flow</span><h2>Income vs expenses</h2></div><span class="pill">Last 6 months</span></div>
+                <div class="legend"><span><i class="income"></i>Income</span><span><i class="expense"></i>Expenses</span></div>
+                <div class="bar-chart" aria-label="Sample monthly income and expense bar chart">
+                    <div class="bar-group"><div class="bars"><i style="--h:62%"></i><i style="--h:43%"></i></div><span>Feb</span></div>
+                    <div class="bar-group"><div class="bars"><i style="--h:70%"></i><i style="--h:48%"></i></div><span>Mar</span></div>
+                    <div class="bar-group"><div class="bars"><i style="--h:66%"></i><i style="--h:51%"></i></div><span>Apr</span></div>
+                    <div class="bar-group"><div class="bars"><i style="--h:79%"></i><i style="--h:55%"></i></div><span>May</span></div>
+                    <div class="bar-group"><div class="bars"><i style="--h:84%"></i><i style="--h:58%"></i></div><span>Jun</span></div>
+                    <div class="bar-group"><div class="bars"><i style="--h:94%"></i><i style="--h:61%"></i></div><span>Jul</span></div>
+                </div>
+            </article>
+
+            <article class="panel category-panel">
+                <div class="panel-head"><div><span class="eyebrow">Spending</span><h2>Expense mix</h2></div><span class="pill">$11,780</span></div>
+                <div class="donut-wrap">
+                    <div class="donut" role="img" aria-label="Housing 38%, Food 22%, Transport 16%, Other 24%"><span><strong>64%</strong><small>of income</small></span></div>
+                    <div class="category-list">
+                        <div><span><i class="housing"></i>Housing</span><strong>38%</strong></div>
+                        <div><span><i class="food"></i>Food</span><strong>22%</strong></div>
+                        <div><span><i class="transport"></i>Transport</span><strong>16%</strong></div>
+                        <div><span><i class="other"></i>Other</span><strong>24%</strong></div>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="content-grid" id="budgets">
+            <article class="panel">
+                <div class="panel-head"><div><span class="eyebrow">Budget pulse</span><h2>Monthly limits</h2></div><span class="pill good">On track</span></div>
+                <div class="budget-list">
+                    <div class="budget-row"><div><span>Housing</span><strong>$1,850 / $2,100</strong></div><div class="progress"><i style="width:88%"></i></div><small>88% used</small></div>
+                    <div class="budget-row"><div><span>Food</span><strong>$740 / $1,000</strong></div><div class="progress"><i style="width:74%"></i></div><small>74% used</small></div>
+                    <div class="budget-row"><div><span>Transport</span><strong>$390 / $650</strong></div><div class="progress"><i style="width:60%"></i></div><small>60% used</small></div>
+                </div>
+            </article>
+
+            <article class="panel transactions-panel">
+                <div class="panel-head"><div><span class="eyebrow">Activity</span><h2>Recent transactions</h2></div><span class="pill">Sample</span></div>
+                <div class="transaction"><span class="transaction-icon income-bg">↗</span><div><strong>Salary deposit</strong><small>Income · Jul 15</small></div><strong class="money-positive">+$5,200</strong></div>
+                <div class="transaction"><span class="transaction-icon">⌂</span><div><strong>Monthly rent</strong><small>Housing · Jul 04</small></div><strong>−$1,850</strong></div>
+                <div class="transaction"><span class="transaction-icon">◇</span><div><strong>Grocery market</strong><small>Food · Jul 03</small></div><strong>−$145</strong></div>
+                <div class="transaction"><span class="transaction-icon">→</span><div><strong>Metro card</strong><small>Transport · Jul 02</small></div><strong>−$60</strong></div>
+            </article>
+        </section>
+
+        <section class="panel toolkit-panel" id="toolkit">
+            <div class="panel-head"><div><span class="eyebrow">Planning toolkit</span><h2>Turn a goal into a next step.</h2><p>Four private calculators help model common financial decisions.</p></div></div>
+            <div class="tool-grid">
+                <article><span>01</span><strong>Emergency fund</strong><small>Target a resilient cash reserve.</small></article>
+                <article><span>02</span><strong>Debt payoff</strong><small>Compare time and interest cost.</small></article>
+                <article><span>03</span><strong>Savings goal</strong><small>Project a realistic timeline.</small></article>
+                <article><span>04</span><strong>50 / 30 / 20</strong><small>Build a starting allocation.</small></article>
+            </div>
+        </section>
+
+        <section class="advisor-card" id="advisor">
+            <div class="advisor-icon">✦</div>
+            <div><span class="eyebrow">Ouroboros Advisor</span><h2>Workspace-aware guidance, without an external AI provider.</h2><p>The full application explains cash flow, budget pressure, spending patterns, and practical priorities using the active workspace.</p></div>
+            <a class="button primary" href="https://github.com/viktorkiramman-arch/ouroboros-financial-management#local-setup">Run the full app</a>
+        </section>
+
+        <footer>
+            <span>Ouroboros Financial Management</span>
+            <span>Static preview · <span id="year"></span></span>
+        </footer>
+    </main>
+</div>
+<script src="assets/preview.js"></script>
+</body>
+</html>

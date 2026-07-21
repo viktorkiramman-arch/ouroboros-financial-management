@@ -1,5 +1,9 @@
 # Ouroboros Financial Management
 
+**Frontend:** https://viktorkiramman-arch.github.io/ouroboros-financial-management/
+
+> The frontend link is a static product preview with sample data. Run the Flask application locally for accounts, transactions, reports, and persistence.
+
 A private Flask financial-management workspace for personal, family, company, and group finances. Ouroboros combines transaction tracking, budgets, reports, calendar analytics, local workspace-aware guidance, currency conversion, and decision-planning calculators.
 
 ## Highlights
